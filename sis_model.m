@@ -36,10 +36,19 @@ for t = 1:numsteps
     end
     
     #Solving the ODE
-    dsdt = -beta.*(I.*S./N) + gama.*I - tau.*I_neibs;
-    didt = beta.*(I.*S./N) - gama.*I +  tau.*I_neibs;
-    I = I + didt.*dt
-    S = N-I;
+    dsdt = -beta.*(I.*S./N) + gama.*I - tau.*(I_neibs.*S./N);
+    didt = beta.*(I.*S./N) - gama.*I +  tau.*(I_neibs.*S./N);
+    I = I + didt.*dt;
+    S = S + dsdt.*dt;
+    for i = 1:sz
+        for j = 1:sz
+            if I(i,j) > N(i,j)-1
+                S(i,j) = 0
+                I(i,j) = N(i,j)
+            end
+        end
+    end
+    
     
     #Make sure the system is clsoed
 
